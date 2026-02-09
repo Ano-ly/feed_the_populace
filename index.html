@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rise Academy Task 1 API</title> 
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        }
+        input {
+            box-sizing: border-box;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            padding: 0.3rem;
+        }
+        main {
+            border: 1px solid red;
+            box-sizing:border-box;
+            display: flex;
+            flex-direction: row;
+            gap: 1rem;
+            height: 100%;
+            width: 100%;
+        }
+        .rnm {
+            border: 1px solid blue;
+            display: flex;
+            flex: 2;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .mil {
+            border: 1px solid green;
+            box-sizing: border-box;
+            display: flex;
+            flex: 3;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .mil__frm {
+            border: 0.1rem solid orange;
+            flex: 1;
+            padding: 1rem;
+        }
+        .mil__frm--cnt {
+            border: 0.1rem solid rgba(128, 0, 128, 0.123);
+            border-radius: 0.4rem;
+            box-shadow: -2px -2px 6px rgba(225, 225, 225, 10);
+            height: 2rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        .mil__frm--ingr {
+            border: 0.1rem solid rgba(128, 0, 128, 0.123);
+            border-radius: 0.4rem;
+            box-shadow: -2px -2px 6px rgba(225, 225, 225, 10);
+            height: 2rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            width: 100%;
+        }
+        .mil__res {
+            border: 0.1rem solid green;
+            flex: 2;
+        }
+        .rnm__ptrt {
+            border: 0.1rem solid yellow;
+            flex:3;
+        }
+        .rnm__desc {
+            border: 0.1rem solid pink;
+            flex:2;
+        }
+    </style> 
+    <body>
+        <main>
+            <div class="rnm">
+                <div class="rnm__ptrt">
+                    mm
+                </div>
+                <div class="rnm__desc">
+                    mm
+                </div>
+            </div>
+            <div class="mil">
+                <div class="mil__frm">
+                    <form>
+                        <label>Input the ingredients you have available in a space-separated list</label></br>
+                        <input class="mil__frm--ingr" type="text"></br>
+                        <label>How many recipes do you want?</label></br>
+                        <input class="mil__frm--cnt" type="number" >
+                    </form>
+                </div>
+                <div  class="mil__res">
+                    
+                </div>
+            </div>
+        </main>
+    </body>
+</head>
+</html>
