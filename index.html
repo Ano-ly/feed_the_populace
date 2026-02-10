@@ -52,15 +52,15 @@
             .mil__frm {
                 flex: 1;
             }
-            .mil__frm--cnt {
+            #mil__frm--cnt {
                 border: 0.1rem solid rgba(128, 0, 128, 0.123);
                 border-radius: 0.4rem;
-                box-shadow: -2px -2px 6px rgba(225, 225, 225, 10);
+                box-shadow: -2px -2px 6px rgba(225, 225, 225, 0.9);
                 height: 2rem;
                 margin-top: 1rem;
                 margin-bottom: 1rem;
             }
-            .mil__frm--ingr {
+            #mil__frm--ingr {
                 border: 0.1rem solid rgba(128, 0, 128, 0.123);
                 border-radius: 0.4rem;
                 box-shadow: -2px -2px 6px rgba(225, 225, 225, 10);
@@ -69,10 +69,12 @@
                 margin-bottom: 1rem;
                 width: 100%;
             }
-            .mil__res {
+            #mil__res {
                 box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.144) inset;
                 border-radius: 0.5rem;
                 flex: 2;
+                overflow-y: scroll;
+                padding: 1rem;
             }
             .rnm__ptrt {
                 background-color: rgb(226, 245, 244);
@@ -96,6 +98,26 @@
                 overflow-y: scroll;
                 padding: 2rem;
             }
+            #submit {
+                background-color: rgb(156, 53, 53);
+                border: none;
+                border-radius: 0.4rem;
+                color: white;
+                font-family: "Genos", sans-serif;
+                font-size: 1.1rem;
+                height: 2.5rem;
+                position: relative;
+                width: 10rem;
+            }
+            #submit:hover{
+                background-color: rgb(180, 91, 91);
+            }
+            #meal_list {
+                list-style-type: none;
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
         </style> 
     </head>
     <body>
@@ -110,26 +132,107 @@
             </div>
             <div class="mil">
                 <div class="mil__frm">
-                    <form>
-                        <label>Input the ingredients you have available in a space-separated list</label></br>
-                        <input class="mil__frm--ingr" type="text"></br>
-                        <label>How many recipes do you want?</label></br>
-                        <input class="mil__frm--cnt" type="number" >
+                    <form id="meal_form">
+                        <fieldset id="mil_form_field" disabled>
+                            <label>Input the ingredients you have available in a space-separated list</label></br>
+                            <input id="mil__frm--ingr" type="text"></br>
+                            <label>How many recipes do you want?</label></br>
+                            <input id="mil__frm--cnt" type="number" min="1"></br>
+                            <button id="submit" type="submit">Find Your Meal</button> 
+                        </fieldset>
                     </form>
                 </div>
-                <div  class="mil__res">
-                    
+                <div id="mil__res">
+                    <ul id="meal_list">
+
+                    </ul>
                 </div>
             </div>
         </main>
     </body>
     <script>
         console.log("starting");
+        const meal_form = document.getElementById("meal_form");
+        const meal_list = document.getElementById("meal_list");
+        const results_display = document.getElementById("mil__res");
+        const ingredients = document.getElementById("mil__frm--ingr");
+        const count_of_meals = document.getElementById("mil__frm--cnt");
+
+        let name_of_char = "me";
+        const char_description = document.getElementById("description");
+
+        meal_form.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            if (ingredients.value.trim() === "" || count_of_meals.value === "") {
+                alert(`Don't forget to tell ${name_of_char} the ingredients you have in the kitchen and the number of recipes you want.`)
+            } else {
+                meal_list.innerHTML = "";
+                const ingr_list = ingredients.value.split(" ").join(",+");
+                url_args = `?ingredients=${ingr_list}&number=${count_of_meals.value}`
+                const meal_url = `https://api.spoonacular.com/recipes/findByIngredients${url_args}`
+                MY_API_KEY = "18ba9a928b8a4080a70071e6110fc047";
+                const mySecondRequest = new XMLHttpRequest();
+                mySecondRequest.open("GET", meal_url, true);
+                mySecondRequest.setRequestHeader("x-api-key", MY_API_KEY);
+                mySecondRequest.responseType = "json";
+                mySecondRequest.onreadystatechange = function() {
+                    if (mySecondRequest.readyState === 1) {
+                        console.log("1")
+                    } else if (mySecondRequest.readyState === 2) {
+                        console.log("2")
+                    } else if (mySecondRequest.readyState === 3) {
+                        console.log("3")
+                    } else if (mySecondRequest.readyState === 4 && mySecondRequest.status === 200) {
+                        const myMealData = mySecondRequest.response;
+                        myMealData.forEach(meal_data => {
+                            const one_meal = document.createElement("li");
+                            const inner_div = document.createElement("div");
+                            inner_div.style.display = "flex";
+                            inner_div.style.flexDirection = "row";
+                            inner_div.style.gap = "1rem";
+
+                            const img_container = document.createElement("div");
+                            img_container.style.flex = "1 1 0";
+                            img_container.style.overflow = "hidden";
+                            const image_of_meal = document.createElement("img");
+                            image_of_meal.src = meal_data.image;
+                            image_of_meal.style.width = "100%";
+                            image_of_meal.style.height = "100%";
+                            image_of_meal.style.objectFit = "cover";
+                            image_of_meal.style.minHeight = "0";
+                            image_of_meal.style.minWidth = "0";
+                            img_container.appendChild(image_of_meal);
+
+                            const meal_info = document.createElement("div");
+                            const used_ingr = [];
+                            meal_data.usedIngredients.forEach(ingr => {
+                                used_ingr.push(ingr.original);
+                            })
+                            const missed_ingr = [];
+                            meal_data.missedIngredients.forEach(ingr => {
+                                missed_ingr.push(ingr.original)
+                            })
+                            meal_info.innerHTML = `<p style="font-size: 1.2rem">${meal_data.title}</p><p style="font-size: 0.6rem">Used Ingredients: ${used_ingr.join(", ")}</br>Missing Ingredients: ${missed_ingr.join(", ")}</p>`;
+                            meal_info.style.fontFamily = "Iceberg, sans-serif";
+                            meal_info.style.flex = "4 1 0";
+
+                            inner_div.appendChild(img_container);
+                            inner_div.appendChild(meal_info);
+                            one_meal.appendChild(inner_div);
+                            meal_list.appendChild(one_meal);
+                        })
+                    } else if (mySecondRequest.readyState === 4 && mySecondRequest.status !== 200) {
+                        alert(`Oops! ${name_of_char} failed to get you a meal. Come back tomorrow!`);
+                    }
+                }
+                mySecondRequest.send();
+            }
+        })
         const url = `https://rickandmortyapi.com/api/character/${Math.ceil(Math.random() * 826)}`
         const myRequest = new XMLHttpRequest();
         myRequest.open("GET", url, true)
         myRequest.responseType = "json"
-        myRequest.send()
         myRequest.onreadystatechange = function() {
             if (myRequest.readyState === 1) {
                 console.log("1")
@@ -140,9 +243,9 @@
             } else if (myRequest.readyState === 4 && myRequest.status === 200) {
                 console.log(myRequest.response)
                 const myData = myRequest.response;
-
+                name_of_char = myData.name;
+                const mil_form_field = document.getElementById("mil_form_field")
                 const portrait_div = document.getElementById("portrait_div")              
-                const description = document.getElementById("description");
 
                 const img_of_char = document.createElement("img")
                 img_of_char.style.objectFit = "cover";
@@ -157,10 +260,12 @@
                 if (array_of_vowels.includes(myData.species[0].toLowerCase())) {
                     word = "an";
                 }
-                description.textContent = `My name is ${myData.name}. I am ${word} ${myData.species} from the ${myData.location.name}. Fret not! For I will help you find a meal.`;
-
-                
+                char_description.textContent = `My name is ${name_of_char}. I am ${word} ${myData.species} from the ${myData.location.name}. Fret not! For I will help you find a meal.`;  
+                mil_form_field.disabled = false;
+            } else if (myRequest.readyState === 4 && myRequest.status !== 200) {
+                char_description.textContent = "Uh-oh, wormhole collapsed.";
             }
         }
+        myRequest.send();
     </script>
 </html>
