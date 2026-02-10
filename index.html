@@ -90,13 +90,25 @@
                 display: none;
             }
             .rnm__ptrt {
-                background-color: rgb(226, 245, 244);
+                animation-name: loading;
+                animation-duration: 0.7s;
+                animation-iteration-count: infinite;
+                animation-direction: alternate;
+                animation-timing-function: ease;
+                background-image: url(loading.jpg);
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
                 border-radius: 1rem;
                 flex: 3 1 0;
                 object-fit: cover;
                 overflow: hidden;
                 min-width: 0;
                 min-height: 0;
+            }
+            @keyframes loading {
+                from {opacity: 1;}
+                to {opacity: 0.6;}
             }
             .rnm__ptrt img {
                 transition: transform .2s;
@@ -149,7 +161,7 @@
         <main>
             <div class="rnm">
                 <div class="rnm__ptrt" id="portrait_div">
-                    
+
                 </div>
                 <div class="rnm__desc" id="description">
                     Creating wormhole...
@@ -182,6 +194,7 @@
         const results_display = document.getElementById("mil__res");
         const ingredients = document.getElementById("mil__frm--ingr");
         const count_of_meals = document.getElementById("mil__frm--cnt");
+        const portrait_div = document.getElementById("portrait_div")
 
         let name_of_char = "me";
         const char_description = document.getElementById("description");
@@ -274,8 +287,7 @@
                 console.log(myRequest.response)
                 const myData = myRequest.response;
                 name_of_char = myData.name;
-                const mil_form_field = document.getElementById("mil_form_field")
-                const portrait_div = document.getElementById("portrait_div")              
+                const mil_form_field = document.getElementById("mil_form_field")              
 
                 const img_of_char = document.createElement("img")
                 img_of_char.style.objectFit = "cover";
@@ -284,6 +296,7 @@
                 img_of_char.src = myData.image;
                 img_of_char.style.borderRadius = "1rem";
                 portrait_div.appendChild(img_of_char);
+                portrait_div.style.animation = "none";
 
                 let word = "a";
                 array_of_vowels = ['a', 'e', 'i', 'o', 'u'];
@@ -293,6 +306,7 @@
                 char_description.textContent = `My name is ${name_of_char}. I am ${word} ${myData.species} from the ${myData.location.name}. Fret not! For I will help you find a meal.`;  
                 mil_form_field.disabled = false;
             } else if (myRequest.readyState === 4 && myRequest.status !== 200) {
+                portrait_div.style.animation = "none";
                 char_description.textContent = "Uh-oh, wormhole collapsed.";
             }
         }
