@@ -210,6 +210,9 @@
                         console.log("3")
                     } else if (mySecondRequest.readyState === 4 && mySecondRequest.status === 200) {
                         const myMealData = mySecondRequest.response;
+                        if (myMealData.length === 0) {
+                            alert(`Review your ingredients`);
+                        }
                         myMealData.forEach(meal_data => {
                             const one_meal = document.createElement("li");
                             const inner_div = document.createElement("div");
